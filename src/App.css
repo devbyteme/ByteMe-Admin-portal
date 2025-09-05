@@ -1,0 +1,75 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #FE4B11aa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #FE4B11aa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* New ByteMe brand styles */
+.brand-primary {
+  color: #FE4B11;
+}
+
+.brand-secondary {
+  color: #FEFBEA;
+}
+
+.brand-white {
+  color: #FFFFFF;
+}
+
+.brand-dark {
+  color: #211E1D;
+}
+
+.bg-brand-primary {
+  background-color: #FE4B11;
+}
+
+.bg-brand-secondary {
+  background-color: #FEFBEA;
+}
+
+.bg-brand-white {
+  background-color: #FFFFFF;
+}
+
+.bg-brand-dark {
+  background-color: #211E1D;
+}
