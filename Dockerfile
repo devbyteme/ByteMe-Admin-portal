@@ -6,12 +6,15 @@ ARG NODE_VERSION=22.13.1
 FROM node:${NODE_VERSION}-slim AS builder
 WORKDIR /app
 
-# Install dependencies (use npm ci for deterministic builds)
-COPY --link package.json package-lock.json ./
-RUN npm ci
+# Upgrade npm to avoid version mismatches
+RUN npm install -g npm@11.6.0
+
+# Install dependencies (less strict than npm ci)
+COPY package.json package-lock.json ./
+RUN npm install --frozen-lockfile
 
 # Copy the rest of the application source
-COPY --link . .
+COPY . .
 
 # Build the production static files
 RUN npm run build
