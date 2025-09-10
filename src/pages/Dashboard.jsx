@@ -20,9 +20,11 @@ const Dashboard = () => {
     growth: {
       vendors: 0,
       customers: 0,
-      orders: 0
+      orders: 0,
+      revenue: 0
     }
   });
+  const [vendorStats, setVendorStats] = useState(null);
   const [revenueData, setRevenueData] = useState([]);
   const [vendors, setVendors] = useState([]);
   const [selectedVendor, setSelectedVendor] = useState('all');
@@ -43,11 +45,15 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
+      console.log('Fetching admin dashboard data...');
       const response = await analyticsService.getDashboardStats();
+      console.log('Admin dashboard response:', response);
       
       if (response.success) {
         setStats(response.data);
+        console.log('Admin dashboard stats set:', response.data);
       } else {
+        console.error('Dashboard stats failed:', response.message);
         setError('Failed to load dashboard statistics');
       }
     } catch (err) {
@@ -72,10 +78,15 @@ const Dashboard = () => {
   const fetchChartData = async () => {
     try {
       setChartsLoading(true);
+      console.log('Fetching revenue chart data...', { period, selectedVendor });
       const response = await analyticsService.getRevenueStats(period, selectedVendor);
+      console.log('Revenue chart response:', response);
       
       if (response.success) {
         setRevenueData(response.data);
+        console.log('Revenue chart data set:', response.data);
+      } else {
+        console.error('Revenue chart failed:', response.message);
       }
     } catch (err) {
       console.error('Error fetching chart data:', err);
@@ -84,8 +95,32 @@ const Dashboard = () => {
     }
   };
 
+  const fetchVendorStats = async (vendorId) => {
+    try {
+      console.log('Fetching vendor-specific stats for:', vendorId);
+      const response = await analyticsService.getVendorDashboardStats(vendorId);
+      console.log('Vendor stats response:', response);
+      
+      if (response.success) {
+        setVendorStats(response.data);
+        console.log('Vendor stats set:', response.data);
+      } else {
+        console.error('Vendor stats failed:', response.message);
+        setVendorStats(null);
+      }
+    } catch (err) {
+      console.error('Error fetching vendor stats:', err);
+      setVendorStats(null);
+    }
+  };
+
   const handleVendorChange = (vendorId) => {
     setSelectedVendor(vendorId);
+    if (vendorId !== 'all') {
+      fetchVendorStats(vendorId);
+    } else {
+      setVendorStats(null);
+    }
   };
 
   const handlePeriodChange = (newPeriod) => {
@@ -131,34 +166,100 @@ const Dashboard = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <StatsCard
-          title="Total Vendors"
-          value={stats.totalVendors.toLocaleString()}
-          icon={BuildingStorefrontIcon}
-          change={stats.growth?.vendors}
-          changeType={stats.growth?.vendors >= 0 ? "positive" : "negative"}
-        />
-        <StatsCard
-          title="Total Customers"
-          value={stats.totalCustomers.toLocaleString()}
-          icon={UserGroupIcon}
-          change={stats.growth?.customers}
-          changeType={stats.growth?.customers >= 0 ? "positive" : "negative"}
-        />
-        <StatsCard
-          title="Total Orders"
-          value={stats.totalOrders.toLocaleString()}
-          icon={ClipboardDocumentListIcon}
-          change={stats.growth?.orders}
-          changeType={stats.growth?.orders >= 0 ? "positive" : "negative"}
-        />
-        <StatsCard
-          title="Total Revenue"
-          value={formatCurrency(stats.totalRevenue)}
-          icon={CurrencyDollarIcon}
-          change={stats.growth?.revenue}
-          changeType={stats.growth?.revenue >= 0 ? "positive" : "negative"}
-        />
+        {selectedVendor === 'all' ? (
+          <>
+            <StatsCard
+              title="Total Vendors"
+              value={stats.totalVendors.toLocaleString()}
+              icon={BuildingStorefrontIcon}
+              change={stats.growth?.vendors}
+              changeType={stats.growth?.vendors >= 0 ? "positive" : "negative"}
+            />
+            <StatsCard
+              title="Total Customers"
+              value={stats.totalCustomers.toLocaleString()}
+              icon={UserGroupIcon}
+              change={stats.growth?.customers}
+              changeType={stats.growth?.customers >= 0 ? "positive" : "negative"}
+            />
+            <StatsCard
+              title="Total Orders"
+              value={stats.totalOrders.toLocaleString()}
+              icon={ClipboardDocumentListIcon}
+              change={stats.growth?.orders}
+              changeType={stats.growth?.orders >= 0 ? "positive" : "negative"}
+            />
+            <StatsCard
+              title="Total Revenue"
+              value={formatCurrency(stats.totalRevenue)}
+              icon={CurrencyDollarIcon}
+              change={stats.growth?.revenue}
+              changeType={stats.growth?.revenue >= 0 ? "positive" : "negative"}
+            />
+          </>
+        ) : vendorStats ? (
+          <>
+            <StatsCard
+              title="Vendor Name"
+              value={vendorStats.vendorName}
+              icon={BuildingStorefrontIcon}
+              change={null}
+              changeType="neutral"
+            />
+            <StatsCard
+              title="Total Orders"
+              value={vendorStats.totalOrders.toLocaleString()}
+              icon={ClipboardDocumentListIcon}
+              change={vendorStats.growth?.orders}
+              changeType={vendorStats.growth?.orders >= 0 ? "positive" : "negative"}
+            />
+            <StatsCard
+              title="Total Revenue"
+              value={formatCurrency(vendorStats.totalRevenue)}
+              icon={CurrencyDollarIcon}
+              change={vendorStats.growth?.revenue}
+              changeType={vendorStats.growth?.revenue >= 0 ? "positive" : "negative"}
+            />
+            <StatsCard
+              title="Vendor ID"
+              value={vendorStats.vendorId.slice(-8)}
+              icon={BuildingStorefrontIcon}
+              change={null}
+              changeType="neutral"
+            />
+          </>
+        ) : (
+          <>
+            <StatsCard
+              title="Loading..."
+              value="Please wait"
+              icon={BuildingStorefrontIcon}
+              change={null}
+              changeType="neutral"
+            />
+            <StatsCard
+              title="Loading..."
+              value="Please wait"
+              icon={ClipboardDocumentListIcon}
+              change={null}
+              changeType="neutral"
+            />
+            <StatsCard
+              title="Loading..."
+              value="Please wait"
+              icon={CurrencyDollarIcon}
+              change={null}
+              changeType="neutral"
+            />
+            <StatsCard
+              title="Loading..."
+              value="Please wait"
+              icon={BuildingStorefrontIcon}
+              change={null}
+              changeType="neutral"
+            />
+          </>
+        )}
       </div>
 
       {/* Filters */}

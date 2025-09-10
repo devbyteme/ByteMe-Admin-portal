@@ -27,8 +27,8 @@ const Layout = () => {
     { name: 'Settings', href: '/settings', icon: Cog6ToothIcon },
   ];
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
 

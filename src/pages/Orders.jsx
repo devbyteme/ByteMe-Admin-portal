@@ -218,7 +218,7 @@ const Orders = () => {
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-        <div className="flex-1 max-w-md">
+        {/* <div className="flex-1 max-w-md">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
@@ -231,9 +231,9 @@ const Orders = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-        </div>
+        </div> */}
         
-        <div className="min-w-0">
+        {/* <div className="min-w-0">
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -246,17 +246,17 @@ const Orders = () => {
             <option value="served">Served</option>
             <option value="cancelled">Cancelled</option>
           </select>
-        </div>
+        </div> */}
       </div>
 
-      {error && (
+      {/* {error && (
         <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
           {error}
         </div>
-      )}
+      )} */}
 
       {/* Orders Table */}
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
+      {/* <div className="bg-white shadow overflow-hidden sm:rounded-md">
         <ul className="divide-y divide-gray-200">
           {filteredOrders.map((order) => (
             <li key={order._id}>
@@ -323,9 +323,9 @@ const Orders = () => {
             </li>
           ))}
         </ul>
-      </div>
+      </div> */}
 
-      {filteredOrders.length === 0 && !loading && (
+      {/* {filteredOrders.length === 0 && !loading && (
         <div className="text-center py-12">
           <ClipboardDocumentListIcon className="mx-auto h-12 w-12 text-gray-400" />
           <h3 className="mt-2 text-sm font-medium text-gray-900">No orders found</h3>
@@ -335,10 +335,10 @@ const Orders = () => {
               : 'No orders have been placed yet.'}
           </p>
         </div>
-      )}
+      )} */}
 
       {/* Summary */}
-      <div className="bg-white shadow rounded-lg p-6">
+      {/* <div className="bg-white shadow rounded-lg p-6">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Order Summary</h3>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <div className="text-center">
@@ -370,7 +370,7 @@ const Orders = () => {
             <div className="text-sm text-gray-500">Total Revenue</div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

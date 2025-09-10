@@ -48,9 +48,19 @@ export const authService = {
     const response = await api.post('/auth/admin/register', adminData);
     return response.data;
   },
-  logout: () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminUser');
+  logout: async () => {
+    try {
+      // Call backend logout endpoint
+      await api.post('/auth/logout');
+    } catch (error) {
+      console.error('Admin logout error:', error);
+    } finally {
+      // Clear only admin-specific auth tokens and user data
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminUser');
+      
+      console.log('🔐 Admin AuthService: Admin authentication data cleared from localStorage');
+    }
   },
   getCurrentUser: () => {
     const user = localStorage.getItem('adminUser');
@@ -65,6 +75,10 @@ export const authService = {
 export const analyticsService = {
   getDashboardStats: async () => {
     const response = await api.get('/admin/dashboard-stats');
+    return response.data;
+  },
+  getVendorDashboardStats: async (vendorId) => {
+    const response = await api.get(`/admin/vendor-dashboard-stats/${vendorId}`);
     return response.data;
   },
   getVendorStats: async (period = '30d') => {
