@@ -19,7 +19,7 @@ A modern admin dashboard for managing the ByteMe restaurant platform.
 
 ### Prerequisites
 
-- Node.js 18.x or higher
+- Node.js 18.x or higher 
 - npm or yarn package manager
 
 ### Installation
@@ -174,4 +174,5 @@ src/
 1. Follow the existing code style and structure
 2. Add appropriate error handling
 3. Update documentation for new features
+
 4. Test thoroughly before submitting changes
