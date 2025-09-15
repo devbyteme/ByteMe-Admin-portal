@@ -124,7 +124,7 @@ const AdminRegistration = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-secondary to-brand-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-        <img src="/src/assets/Main Logo_ByteMe.png" alt="ByteMe Logo" className="w-40 h-20" />
+        <img src="/Main Logo_ByteMe.png" alt="ByteMe Logo" className="w-40 h-20" />
           <p className="mt-2 text-center text-sm text-brand-dark/70">
             Register as a ByteMe platform administrator
           </p>

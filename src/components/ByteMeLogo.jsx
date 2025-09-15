@@ -42,7 +42,7 @@ const ByteMeLogo = ({
     return (
       <div className={`flex items-center ${className}`}>
         <div className="flex flex-col">
-          <img src="/assets/Main Logo_ByteMe.png" alt="ByteMe Logo" className="w-10 h-10" />
+          <img src="/Main Logo_ByteMe.png" alt="ByteMe Logo" className="w-10 h-10" />
           {showTagline && (
             <span className="text-xs text-brand-dark/70 font-medium">
               Digital Dining Solutions
