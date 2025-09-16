@@ -26,7 +26,30 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     };
 
+    // Handle Google OAuth callback
+    const handleGoogleCallback = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+      const googleAuth = urlParams.get('googleAuth');
+      const userData = urlParams.get('userData');
+
+      if (token && googleAuth && userData) {
+        try {
+          const user = JSON.parse(decodeURIComponent(userData));
+          localStorage.setItem('adminToken', token);
+          localStorage.setItem('adminUser', JSON.stringify(user));
+          setUser(user);
+          
+          // Clean up URL parameters
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch (error) {
+          console.error('Error parsing Google OAuth data:', error);
+        }
+      }
+    };
+
     initializeAuth();
+    handleGoogleCallback();
   }, []);
 
   const login = async (credentials) => {
@@ -60,10 +83,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const googleLogin = () => {
+    authService.googleLogin();
+  };
+
   const value = {
     user,
     login,
     logout,
+    googleLogin,
     isAuthenticated: !!user,
     loading
   };

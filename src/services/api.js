@@ -68,6 +68,10 @@ export const authService = {
   },
   isAuthenticated: () => {
     return !!localStorage.getItem('adminToken');
+  },
+  googleLogin: () => {
+    // Redirect to backend Google OAuth endpoint
+    window.location.href = `${API_BASE_URL}/auth/google/admin`;
   }
 };
 
