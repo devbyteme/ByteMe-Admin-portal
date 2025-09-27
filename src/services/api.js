@@ -14,7 +14,11 @@ const api = axios.create({
 // Request interceptor to add token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('adminToken');
+    // Check for both general admin and multi-vendor admin tokens
+    const generalAdminToken = localStorage.getItem('generalAdminToken');
+    const multiVendorAdminToken = localStorage.getItem('multiVendorAdminToken');
+    const token = generalAdminToken || multiVendorAdminToken;
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -30,9 +34,12 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminUser');
-      window.location.href = '/login';
+      // Clear both admin types' tokens and user data
+      localStorage.removeItem('generalAdminToken');
+      localStorage.removeItem('generalAdminUser');
+      localStorage.removeItem('multiVendorAdminToken');
+      localStorage.removeItem('multiVendorAdminUser');
+      window.location.href = '/';
     }
     return Promise.reject(error);
   }
@@ -44,8 +51,20 @@ export const authService = {
     const response = await api.post('/auth/admin/login', credentials);
     return response.data;
   },
+  loginMultiVendorAdmin: async (credentials) => {
+    const response = await api.post('/auth/admin/multi-vendor-login', credentials);
+    return response.data;
+  },
   registerAdmin: async (adminData) => {
     const response = await api.post('/auth/admin/register', adminData);
+    return response.data;
+  },
+  registerMultiVendorAdmin: async (adminData) => {
+    const response = await api.post('/auth/admin/multi-vendor-register', adminData);
+    return response.data;
+  },
+  verifyVendorAccess: async (accessToken) => {
+    const response = await api.get(`/vendor-access/verify/${accessToken}`);
     return response.data;
   },
   logout: async () => {
@@ -55,19 +74,27 @@ export const authService = {
     } catch (error) {
       console.error('Admin logout error:', error);
     } finally {
-      // Clear only admin-specific auth tokens and user data
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminUser');
+      // Clear both admin types' auth tokens and user data
+      localStorage.removeItem('generalAdminToken');
+      localStorage.removeItem('generalAdminUser');
+      localStorage.removeItem('multiVendorAdminToken');
+      localStorage.removeItem('multiVendorAdminUser');
       
-      console.log('🔐 Admin AuthService: Admin authentication data cleared from localStorage');
+      console.log('🔐 Admin AuthService: All admin authentication data cleared from localStorage');
     }
   },
   getCurrentUser: () => {
-    const user = localStorage.getItem('adminUser');
+    // Check for both admin types
+    const generalAdminUser = localStorage.getItem('generalAdminUser');
+    const multiVendorAdminUser = localStorage.getItem('multiVendorAdminUser');
+    const user = generalAdminUser || multiVendorAdminUser;
     return user ? JSON.parse(user) : null;
   },
   isAuthenticated: () => {
-    return !!localStorage.getItem('adminToken');
+    // Check for both admin types
+    const generalAdminToken = localStorage.getItem('generalAdminToken');
+    const multiVendorAdminToken = localStorage.getItem('multiVendorAdminToken');
+    return !!(generalAdminToken || multiVendorAdminToken);
   },
   googleLogin: () => {
     // Redirect to backend Google OAuth endpoint
@@ -110,7 +137,8 @@ export const analyticsService = {
 // Vendor services  
 export const vendorService = {
   getAllVendors: async () => {
-    const response = await api.get('/vendors');
+    // Use admin-scoped vendors endpoint to respect role-based access
+    const response = await api.get('/admin/vendors');
     return response.data;
   },
   getVendorById: async (id) => {
@@ -149,8 +177,10 @@ export const customerService = {
 
 // Order services
 export const orderService = {
-  getAllOrders: async () => {
-    const response = await api.get('/orders');
+  getAllOrders: async (params = {}) => {
+    // Use admin-filtered orders endpoint with optional vendorId/period
+    const query = new URLSearchParams(params).toString();
+    const response = await api.get(`/admin/orders${query ? `?${query}` : ''}`);
     return response.data;
   },
   getOrderById: async (id) => {
@@ -159,6 +189,27 @@ export const orderService = {
   },
   updateOrderStatus: async (id, status) => {
     const response = await api.put(`/orders/${id}/status`, { status });
+    return response.data;
+  }
+};
+
+// Aggregated customers for admin (filtered by vendor/date)
+export const customerAggService = {
+  getCustomers: async (params = {}) => {
+    const query = new URLSearchParams(params).toString();
+    const response = await api.get(`/admin/customers${query ? `?${query}` : ''}`);
+    return response.data;
+  }
+};
+
+// Vendor Access services for multi-vendor admin
+export const vendorAccessService = {
+  getUserVendorAccess: async (userEmail) => {
+    const response = await api.get(`/vendor-access/user/${userEmail}`);
+    return response.data;
+  },
+  acceptVendorAccess: async (accessId, userEmail) => {
+    const response = await api.post(`/vendor-access/${accessId}/accept`, { userEmail });
     return response.data;
   }
 };

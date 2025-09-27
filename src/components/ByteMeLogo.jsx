@@ -31,9 +31,7 @@ const ByteMeLogo = ({
   if (variant === 'icon') {
     return (
       <div className={`flex items-center justify-center ${className}`}>
-        <div className={`${getIconSize()} bg-brand-primary rounded-lg flex items-center justify-center shadow-lg`}>
-          <span className="text-brand-white font-bold text-sm">B</span>
-        </div>
+        <img src="/Main Logo_ByteMe.png" alt="ByteMe Logo" className={`${getIconSize()}`} />
       </div>
     );
   }
@@ -56,9 +54,7 @@ const ByteMeLogo = ({
   // Full variant (default)
   return (
     <div className={`flex items-center ${className}`}>
-      <div className={`${getIconSize()} bg-brand-primary rounded-lg flex items-center justify-center shadow-lg mr-3`}>
-        <span className="text-brand-white font-bold text-sm">B</span>
-      </div>
+      <img src="/Main Logo_ByteMe.png" alt="ByteMe Logo" className={`${getIconSize()} mr-3`} />
       <div className="flex flex-col">
         <div className="flex items-baseline">
           <span className={`${getSizeClasses()} font-bold text-brand-dark leading-tight`}>

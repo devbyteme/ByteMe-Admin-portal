@@ -9,23 +9,30 @@ import {
   Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
   Bars3Icon,
-  XMarkIcon
+  XMarkIcon,
+  BuildingOfficeIcon
 } from '@heroicons/react/24/outline';
 import ByteMeLogo from './ByteMeLogo';
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, isGeneralAdmin, isMultiVendorAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: ChartBarIcon },
-    { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon },
-    { name: 'Customers', href: '/customers', icon: UserGroupIcon },
-    { name: 'Orders', href: '/orders', icon: ClipboardDocumentListIcon },
-    { name: 'Settings', href: '/settings', icon: Cog6ToothIcon },
+    { name: 'Dashboard', href: '/dashboard', icon: ChartBarIcon, showFor: ['general_admin', 'multi_vendor_admin'] },
+    { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, showFor: ['general_admin', 'multi_vendor_admin'] },
+    { name: 'Customers', href: '/customers', icon: UserGroupIcon, showFor: ['general_admin'] },
+    { name: 'Orders', href: '/orders', icon: ClipboardDocumentListIcon, showFor: ['general_admin', 'multi_vendor_admin'] },
+    { name: 'Settings', href: '/settings', icon: Cog6ToothIcon, showFor: ['general_admin'] },
   ];
+
+  // Filter navigation based on user role
+  const filteredNavigation = navigation.filter(item => {
+    if (!item.showFor) return true;
+    return item.showFor.includes(user?.role);
+  });
 
   const handleLogout = async () => {
     await logout();
@@ -56,7 +63,7 @@ const Layout = () => {
               <ByteMeLogo variant="text" size="default" showTagline={false} />
             </div>
             <nav className="mt-8 flex-1 px-2 space-y-1">
-              {navigation.map((item) => {
+              {filteredNavigation.map((item) => {
                 const Icon = item.icon;
                 const current = isCurrentPath(item.href);
                 return (
@@ -87,7 +94,7 @@ const Layout = () => {
       <div className="hidden md:flex md:flex-shrink-0">
         <div className="flex flex-col w-64">
           <div className="flex flex-col h-0 flex-1 bg-sidebar">
-            <SidebarContent navigation={navigation} isCurrentPath={isCurrentPath} />
+            <SidebarContent navigation={filteredNavigation} isCurrentPath={isCurrentPath} />
           </div>
         </div>
       </div>

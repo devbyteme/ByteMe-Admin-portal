@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { authService } from '../services/api';
+import { authService, vendorAccessService } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -14,13 +14,13 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [vendorAccess, setVendorAccess] = useState([]);
 
   useEffect(() => {
     const initializeAuth = () => {
-      const token = localStorage.getItem('adminToken');
       const savedUser = authService.getCurrentUser();
 
-      if (token && savedUser) {
+      if (savedUser) {
         setUser(savedUser);
       }
       setLoading(false);
@@ -36,8 +36,14 @@ export const AuthProvider = ({ children }) => {
       if (token && googleAuth && userData) {
         try {
           const user = JSON.parse(decodeURIComponent(userData));
-          localStorage.setItem('adminToken', token);
-          localStorage.setItem('adminUser', JSON.stringify(user));
+          // Store based on admin type
+          if (user.role === 'general_admin') {
+            localStorage.setItem('generalAdminToken', token);
+            localStorage.setItem('generalAdminUser', JSON.stringify(user));
+          } else if (user.role === 'multi_vendor_admin') {
+            localStorage.setItem('multiVendorAdminToken', token);
+            localStorage.setItem('multiVendorAdminUser', JSON.stringify(user));
+          }
           setUser(user);
           
           // Clean up URL parameters
@@ -52,14 +58,38 @@ export const AuthProvider = ({ children }) => {
     handleGoogleCallback();
   }, []);
 
+  const loadVendorAccess = async (userEmail) => {
+    try {
+      const response = await vendorAccessService.getUserVendorAccess(userEmail);
+      if (response.success) {
+        setVendorAccess(response.data);
+      }
+    } catch (error) {
+      console.error('Error loading vendor access:', error);
+      setVendorAccess([]);
+    }
+  };
+
   const login = async (credentials) => {
     try {
       const response = await authService.login(credentials);
       
       if (response.success && response.token) {
-        localStorage.setItem('adminToken', response.token);
-        localStorage.setItem('adminUser', JSON.stringify(response.user));
+        // Store based on admin type
+        if (response.user.role === 'general_admin') {
+          localStorage.setItem('generalAdminToken', response.token);
+          localStorage.setItem('generalAdminUser', JSON.stringify(response.user));
+        } else if (response.user.role === 'multi_vendor_admin') {
+          localStorage.setItem('multiVendorAdminToken', response.token);
+          localStorage.setItem('multiVendorAdminUser', JSON.stringify(response.user));
+        }
         setUser(response.user);
+        
+        // Load vendor access for multi-vendor admins
+        if (response.user.role === 'multi_vendor_admin') {
+          await loadVendorAccess(response.user.email);
+        }
+        
         return { success: true };
       } else {
         return { success: false, message: response.message || 'Login failed' };
@@ -80,6 +110,7 @@ export const AuthProvider = ({ children }) => {
       console.error('Logout error:', error);
     } finally {
       setUser(null);
+      setVendorAccess([]);
     }
   };
 
@@ -89,11 +120,14 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
+    vendorAccess,
     login,
     logout,
     googleLogin,
     isAuthenticated: !!user,
-    loading
+    loading,
+    isGeneralAdmin: user?.role === 'general_admin',
+    isMultiVendorAdmin: user?.role === 'multi_vendor_admin'
   };
 
   return (

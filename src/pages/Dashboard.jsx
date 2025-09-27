@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import {
   UserGroupIcon,
   BuildingStorefrontIcon,
@@ -12,6 +13,8 @@ import { analyticsService } from '../services/api';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
 const Dashboard = () => {
+  const { isMultiVendorAdmin } = useAuth();
+
   const [stats, setStats] = useState({
     totalVendors: 0,
     totalCustomers: 0,
@@ -68,7 +71,13 @@ const Dashboard = () => {
     try {
       const response = await analyticsService.getVendorsForAdmin();
       if (response.success) {
-        setVendors(response.data);
+        const list = response.data || [];
+        setVendors(list);
+        // For multi-vendor admins, default to first vendor and hide 'all'
+        if (isMultiVendorAdmin && list.length > 0) {
+          setSelectedVendor(list[0]._id);
+          fetchVendorStats(list[0]._id);
+        }
       }
     } catch (err) {
       console.error('Error fetching vendors:', err);
@@ -275,7 +284,9 @@ const Dashboard = () => {
                   onChange={(e) => handleVendorChange(e.target.value)}
                   className="appearance-none bg-white border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
                 >
-                  <option value="all">All Vendors</option>
+                  {!isMultiVendorAdmin && (
+                    <option value="all">All Vendors</option>
+                  )}
                   {vendors.map((vendor) => (
                     <option key={vendor._id} value={vendor._id}>
                       {vendor.name}
