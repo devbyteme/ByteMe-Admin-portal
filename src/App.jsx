@@ -11,7 +11,9 @@ import AdminForgotPassword from './pages/AdminForgotPassword';
 import AdminResetPassword from './pages/AdminResetPassword';
 import Dashboard from './pages/Dashboard';
 import Vendors from './pages/Vendors';
+import VendorDetail from './pages/VendorDetail';
 import Customers from './pages/Customers';
+import CustomerDetail from './pages/CustomerDetail';
 import Orders from './pages/Orders';
 import Settings from './pages/Settings';
 import MultiVendorDashboard from './pages/MultiVendorDashboard';
@@ -42,7 +44,9 @@ function App() {
           >
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="vendors" element={<Vendors />} />
+            <Route path="vendors/:id" element={<VendorDetail />} />
             <Route path="customers" element={<Customers />} />
+            <Route path="customers/:id" element={<CustomerDetail />} />
             <Route path="orders" element={<Orders />} />
             <Route path="settings" element={<Settings />} />
           </Route>
