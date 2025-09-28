@@ -284,15 +284,6 @@ const GeneralAdminRegistration = () => {
                 Already have an account? Sign in
               </Link>
           </div>
-
-          <div className="mt-4 text-center">
-            <Link
-              to="/multi-vendor-admin-login"
-              className="text-sm text-gray-600 hover:text-gray-500"
-            >
-              Are you a Multi-Vendor Admin? Sign in here
-            </Link>
-          </div>
         </div>
       </div>
     </div>

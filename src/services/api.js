@@ -34,12 +34,18 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear both admin types' tokens and user data
-      localStorage.removeItem('generalAdminToken');
-      localStorage.removeItem('generalAdminUser');
-      localStorage.removeItem('multiVendorAdminToken');
-      localStorage.removeItem('multiVendorAdminUser');
-      window.location.href = '/';
+      // Only redirect if it's not a login attempt
+      const isLoginAttempt = error.config?.url?.includes('/auth/admin/login') || 
+                            error.config?.url?.includes('/auth/admin/multi-vendor-login');
+      
+      if (!isLoginAttempt) {
+        // Clear both admin types' tokens and user data
+        localStorage.removeItem('generalAdminToken');
+        localStorage.removeItem('generalAdminUser');
+        localStorage.removeItem('multiVendorAdminToken');
+        localStorage.removeItem('multiVendorAdminUser');
+        window.location.href = '/';
+      }
     }
     return Promise.reject(error);
   }

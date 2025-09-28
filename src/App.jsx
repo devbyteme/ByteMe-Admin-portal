@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
-import AdminLanding from './pages/AdminLanding';
 import GeneralAdminLogin from './pages/GeneralAdminLogin';
 import GeneralAdminRegistration from './pages/GeneralAdminRegistration';
 import MultiVendorAdminLogin from './pages/MultiVendorAdminLogin';
@@ -23,7 +22,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<AdminLanding />} />
+          <Route path="/" element={<GeneralAdminLogin />} />
           <Route path="/general-admin-login" element={<GeneralAdminLogin />} />
           <Route path="/general-admin-register" element={<GeneralAdminRegistration />} />
           <Route path="/multi-vendor-admin-login" element={<MultiVendorAdminLogin />} />

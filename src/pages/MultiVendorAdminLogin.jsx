@@ -71,7 +71,21 @@ const MultiVendorAdminLogin = () => {
       }
     } catch (error) {
       console.error('Login error:', error);
-      setError('An error occurred during login. Please try again.');
+      
+      // Handle specific error cases
+      if (error.response?.status === 401) {
+        setError('Invalid email or password. Please check your credentials and try again.');
+      } else if (error.response?.status === 403) {
+        setError('Access denied. Your account may not have the required permissions.');
+      } else if (error.response?.status === 404) {
+        setError('Account not found. Please check your email address.');
+      } else if (error.response?.status >= 500) {
+        setError('Server error. Please try again later.');
+      } else if (error.code === 'NETWORK_ERROR' || !error.response) {
+        setError('Network error. Please check your connection and try again.');
+      } else {
+        setError(error.response?.data?.message || 'An error occurred during login. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
