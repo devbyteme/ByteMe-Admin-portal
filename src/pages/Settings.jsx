@@ -16,9 +16,9 @@ const Settings = () => {
 
   const tabs = [
     { id: 'profile', name: 'Profile', icon: UserIcon },
-    { id: 'notifications', name: 'Notifications', icon: BellIcon },
-    { id: 'security', name: 'Security', icon: ShieldCheckIcon },
-    { id: 'system', name: 'System', icon: Cog6ToothIcon },
+    // { id: 'notifications', name: 'Notifications', icon: BellIcon },
+    // { id: 'security', name: 'Security', icon: ShieldCheckIcon },
+    // { id: 'system', name: 'System', icon: Cog6ToothIcon },
   ];
 
   const handleSave = async (formData) => {
