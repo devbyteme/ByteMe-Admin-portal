@@ -197,7 +197,7 @@ const Orders = () => {
           </div>
           
           {/* Status breakdown for the period */}
-          {orderStats.period?.byStatus && orderStats.period.byStatus.length > 0 && (
+          {/* {orderStats.period?.byStatus && orderStats.period.byStatus.length > 0 && (
             <div className="mt-6 pt-6 border-t border-gray-200">
               <h4 className="text-md font-medium text-gray-900 mb-3">Orders by Status</h4>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -209,7 +209,7 @@ const Orders = () => {
                 ))}
               </div>
             </div>
-          )}
+          )} */}
         </div>
       )}
 
