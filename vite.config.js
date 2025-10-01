@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/admin/'
+  base: '/admin/',
   server: {
     allowedHosts: ['dev.usebyteme.com'],
     port: 4173,
@@ -15,4 +15,5 @@ export default defineConfig({
     host: true,
   },
 })
+
 
