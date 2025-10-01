@@ -6,6 +6,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     allowedHosts: ['dev.usebyteme.com'],
+    port: 4173,
+    host: true,
   },
 })
+
 
