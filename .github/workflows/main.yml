@@ -11,7 +11,7 @@ jobs:
 
     env:
       REGISTRY: ghcr.io
-      IMAGE: ghcr.io/devbyteme/byteme-admin_portal_nginx
+      IMAGE: ghcr.io/devbyteme/byteMe-admin-portal
       TIMESTAMP: ${{ github.run_number }}-${{ github.sha }}
 
     permissions:
