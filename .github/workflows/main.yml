@@ -38,10 +38,11 @@ jobs:
       - name: Build and push image
         run: |
           docker build \
-            --build-arg VITE_API_BASE_URL=$(grep VITE_API_BASE_URL .env | cut -d '=' -f2) \
-            --build-arg NEXTAUTH_URL=$(grep NEXTAUTH_URL .env | cut -d '=' -f2) \
+            --build-arg VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }} \
+            --build-arg NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }} \
             -t ${{ env.IMAGE }}:${{ env.TIMESTAMP }} \
             -t ${{ env.IMAGE }}:latest .
+
       
           docker push ${{ env.IMAGE }}:${{ env.TIMESTAMP }}
           docker push ${{ env.IMAGE }}:latest
