@@ -35,8 +35,8 @@ jobs:
       - name: Build and push image
         run: |
           docker build \
-            --build-arg VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }} \
-            --build-arg NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }} \
+            --build-arg VITE_API_BASE_URL=https://dev.api.usebyteme.com/api \
+            --build-arg NEXTAUTH_URL=https://dev.admin.usebyteme.com \
             -t ${{ env.IMAGE }}:${{ env.TIMESTAMP }} \
             -t ${{ env.IMAGE }}:latest .
 
