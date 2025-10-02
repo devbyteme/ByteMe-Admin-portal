@@ -32,16 +32,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_PAT }}
 
+      - name: Write Secret to File
+        run: echo "${{ secrets.ENVSECRET }}" > .env
+      
       - name: Build and push image
         run: |
           docker build \
-            --build-arg VITE_API_BASE_URL=https://dev.api.usebyteme.com/api \
-            --build-arg NEXTAUTH_URL=https://dev.admin.usebyteme.com \
+            --build-arg VITE_API_BASE_URL=$(grep VITE_API_BASE_URL .env | cut -d '=' -f2) \
+            --build-arg NEXTAUTH_URL=$(grep NEXTAUTH_URL .env | cut -d '=' -f2) \
             -t ${{ env.IMAGE }}:${{ env.TIMESTAMP }} \
             -t ${{ env.IMAGE }}:latest .
-
+      
           docker push ${{ env.IMAGE }}:${{ env.TIMESTAMP }}
           docker push ${{ env.IMAGE }}:latest
+
 
     
   deploy:
