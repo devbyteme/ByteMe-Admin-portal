@@ -17,7 +17,7 @@ RUN npm install -g npm@11.6.0
 
 # Install dependencies
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm install
 
 # Copy source code
 COPY . .
