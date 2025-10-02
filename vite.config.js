@@ -5,12 +5,12 @@ export default defineConfig({
   plugins: [react()],
   base: '/admin/',
   server: {
-    allowedHosts: ['dev.usebyteme.com'],
+    allowedHosts: ['dev.admin.usebyteme.com'],
     port: 4173,
     host: true,
   },
   preview: {
-    allowedHosts: ['dev.usebyteme.com'],
+    allowedHosts: ['dev.admin.usebyteme.com'],
     port: 4173,
     host: true,
   },
