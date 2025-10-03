@@ -11,7 +11,7 @@ jobs:
 
     env:
       REGISTRY: ghcr.io
-      IMAGE: ghcr.io/devbyteme/byteme-admin_portal-prod
+      IMAGE: ghcr.io/devbyteme/byteme-admin_portal
       TIMESTAMP: ${{ github.run_number }}-${{ github.sha }}
       
     permissions:
@@ -56,7 +56,7 @@ jobs:
             mkdir -p ~/.ssh
             echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2-key.pem
             chmod 600 ~/.ssh/ec2-key.pem
-            ssh-keyscan -H ${{ secrets.PUBLIC_DNS_prod }} >> ~/.ssh/known_hosts
+            ssh-keyscan -H ${{ secrets.PUBLIC_DNS }} >> ~/.ssh/known_hosts
 
         - name: Run deployment script on EC2
           run: |
